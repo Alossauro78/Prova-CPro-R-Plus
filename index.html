@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulado Preparatório - Certificação ANBIMA / C-Pro R</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen antialiased flex flex-col">
+
+    <!-- Navbar -->
+    <header class="bg-slate-900 text-white sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-600 p-2 rounded-lg text-white font-bold text-xl tracking-tight">C-Pro R</div>
+                <div>
+                    <h1 class="text-lg font-bold">Simulado de Certificação Profissional</h1>
+                    <p class="text-xs text-slate-400">Plataforma Educacional Interativa (Novo Formato)</p>
+                </div>
+            </div>
+            <!-- Global Dashboard Counter -->
+            <div class="flex gap-4 text-sm bg-slate-800 px-4 py-2 rounded-lg border border-slate-700">
+                <div>Respondidas: <span id="answered-count" class="font-bold text-blue-400">0</span>/45</div>
+                <div class="border-l border-slate-600 pl-4">Aproveitamento Mínimo: <span class="font-bold text-emerald-400">70%</span></div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl w-full mx-auto px-4 py-8 flex-grow flex flex-col lg:flex-row gap-8">
+        <!-- Sidebar Navigation (Blocks) -->
+        <aside class="w-full lg:w-64 shrink-0 flex flex-col gap-2">
+            <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-400 px-3 mb-2">Blocos de Estudo</h2>
+            <button onclick="switchBlock(1)" id="tab-b1" class="w-full text-left px-4 py-3 rounded-xl font-medium transition text-blue-600 bg-blue-50 border border-blue-100 flex justify-between items-center group">
+                <span>1. Suitability e Perfil</span>
+                <span id="badge-b1" class="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full font-bold">0/11</span>
+            </button>
+            <button onclick="switchBlock(2)" id="tab-b2" class="w-full text-left px-4 py-3 rounded-xl font-medium transition text-slate-600 hover:bg-slate-100 flex justify-between items-center group">
+                <span>2. Produtos de Investimento</span>
+                <span id="badge-b2" class="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full font-bold">0/16</span>
+            </button>
+            <button onclick="switchBlock(3)" id="tab-b3" class="w-full text-left px-4 py-3 rounded-xl font-medium transition text-slate-600 hover:bg-slate-100 flex justify-between items-center group">
+                <span>3. Carteiras e Diversificação</span>
+                <span id="badge-b3" class="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full font-bold">0/9</span>
+            </button>
+            <button onclick="switchBlock(4)" id="tab-b4" class="w-full text-left px-4 py-3 rounded-xl font-medium transition text-slate-600 hover:bg-slate-100 flex justify-between items-center group">
+                <span>4. Ética e Compliance</span>
+                <span id="badge-b4" class="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full font-bold">0/5</span>
+            </button>
+            <button onclick="switchBlock(5)" id="tab-b5" class="w-full text-left px-4 py-3 rounded-xl font-medium transition text-slate-600 hover:bg-slate-100 flex justify-between items-center group">
+                <span>5. Economia e Tributação</span>
+                <span id="badge-b5" class="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full font-bold">0/4</span>
+            </button>
+
+            <!-- Submit Action Card -->
+            <div class="mt-6 bg-slate-900 text-white p-4 rounded-2xl shadow-sm border border-slate-800">
+                <h3 class="font-bold text-sm mb-1">Concluiu os estudos?</h3>
+                <p class="text-xs text-slate-400 mb-4">Clique abaixo para finalizar e processar o gabarito oficial com seu desempenho.</p>
+                <button onclick="finishQuiz()" id="finish-btn" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2.5 px-4 rounded-xl shadow transition cursor-pointer text-center text-sm">
+                    Finalizar Simulado
+                </button>
+            </div>
+        </aside>
+
+        <!-- Quiz Panel Area -->
+        <section class="flex-grow flex flex-col gap-6">
+            <!-- Alert Banner / Results -->
+            <div id="results-banner" class="hidden p-6 rounded-2xl shadow-sm border">
+                <!-- Injected dynamically via JS -->
+            </div>
+
+            <!-- Block Progress bar -->
+            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-2">
+                <div class="flex justify-between items-center text-sm">
+                    <span id="current-block-title" class="font-semibold text-slate-700">Bloco 1 – Suitability e perfil do cliente</span>
+                    <span id="block-progress-text" class="text-xs font-bold text-slate-500">0% completo</span>
+                </div>
+                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                    <div id="block-progress-bar" class="bg-blue-600 h-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Questions Form Container -->
+            <div id="questions-container" class="flex flex-col gap-6">
+                <!-- dynamically loaded -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400">
+            &copy; 2026 Plataforma Simulados C-Pro R & ANBIMA. Disponível para uso educacional livre.
+        </div>
+    </footer>
+
+    <script>
+        const questions = [{"id": "Q1", "block": "Bloco 1 \u2013 Suitability e perfil do cliente", "text": "Um cliente de 52 anos pretende se aposentar em 8 anos. Ele possui boa renda, baixo endividamento e patrim\u00f4nio financeiro relevante, mas afirma que n\u00e3o aceitaria perder mais de 5% do capital em um ano. Nos \u00faltimos 12 meses, por\u00e9m, realizou espontaneamente opera\u00e7\u00f5es frequentes em a\u00e7\u00f5es de baixa liquidez, motivado por redes sociais. Na defini\u00e7\u00e3o do perfil para recomenda\u00e7\u00e3o, o elemento mais importante \u00e9:", "options": {"A": "O comportamento efetivamente demonstrado em opera\u00e7\u00f5es recentes, por refletir toler\u00e2ncia real a risco", "B": "A autodeclara\u00e7\u00e3o de avers\u00e3o a perdas, confrontada com objetivos, horizonte e capacidade financeira", "C": "O fato de possuir patrim\u00f4nio elevado, que por si s\u00f3 autoriza maior risco", "D": "A proximidade da aposentadoria, que obriga perfil conservador"}, "correct": "B"}, {"id": "Q2", "block": "Bloco 1 \u2013 Suitability e perfil do cliente", "text": "Uma cliente informa que deseja \u201crentabilidade acima da infla\u00e7\u00e3o\u201d, mas tamb\u00e9m diz que precisar\u00e1 usar parte relevante do valor \u201ccaso surja uma oportunidade imobili\u00e1ria\u201d. Ela n\u00e3o sabe dizer quando isso poder\u00e1 ocorrer. A melhor atua\u00e7\u00e3o inicial \u00e9:", "options": {"A": "Classificar o objetivo como longo prazo, j\u00e1 que busca superar a infla\u00e7\u00e3o", "B": "Direcionar para produtos imobili\u00e1rios, pois h\u00e1 alinhamento tem\u00e1tico", "C": "Tratar a necessidade como potencialmente de curto ou m\u00e9dio prazo e aprofundar a investiga\u00e7\u00e3o sobre liquidez", "D": "Assumir que, por n\u00e3o haver data exata, o prazo \u00e9 irrelevante na indica\u00e7\u00e3o"}, "correct": "C"}, {"id": "Q3", "block": "Bloco 1 \u2013 Suitability e perfil do cliente", "text": "Em suitability, duas pessoas com mesma idade, renda e patrim\u00f4nio podem receber recomenda\u00e7\u00f5es distintas principalmente porque:", "options": {"A": "O perfil de risco \u00e9 constru\u00eddo apenas pela ocupa\u00e7\u00e3o profissional", "B": "A adequa\u00e7\u00e3o depende tamb\u00e9m de conhecimento, experi\u00eancia, objetivos e rea\u00e7\u00e3o esperada a perdas", "C": "O produto mais rent\u00e1vel deve prevalecer em qualquer circunst\u00e2ncia", "D": "A segmenta\u00e7\u00e3o comercial da institui\u00e7\u00e3o substitui a an\u00e1lise individual"}, "correct": "B"}, {"id": "Q4", "block": "Bloco 1 \u2013 Suitability e perfil do cliente", "text": "Um cliente com hist\u00f3rico anterior em renda fixa simples afirma, no question\u00e1rio, que aceita \u201calta volatilidade\u201d, mas durante a conversa demonstra n\u00e3o compreender marca\u00e7\u00e3o a mercado, drawdown e horizonte de investimento. A conduta mais adequada \u00e9:", "options": {"A": "Validar automaticamente o perfil arrojado, pois o question\u00e1rio formal prevalece", "B": "Desconsiderar a declara\u00e7\u00e3o e impedir qualquer investimento de risco", "C": "Reaplicar a avalia\u00e7\u00e3o de forma assistida, verificando se a resposta refletiu compreens\u00e3o real", "D": "Manter o perfil agressivo e limitar apenas o valor aplicado"}, "correct": "C"}, {"id": "Q5", "block": "Bloco 1 \u2013 Suitability e perfil do cliente", "text": "Uma cliente conservadora pede, por iniciativa pr\u00f3pria, aloca\u00e7\u00e3o relevante em um fundo multimercado macro com hist\u00f3rico de grande oscila\u00e7\u00e3o, ap\u00f3s indica\u00e7\u00e3o de um conhecido. O profissional pode seguir com a opera\u00e7\u00e3o apenas se:", "options": {"A": "O produto tiver taxa de administra\u00e7\u00e3o abaixo da m\u00e9dia", "B": "Houver explica\u00e7\u00e3o clara de riscos, confronto com perfil/objetivos e registro adequado da manifesta\u00e7\u00e3o da cliente", "C": "A cliente declarar que a responsabilidade \u00e9 exclusivamente dela, dispensando dever de orienta\u00e7\u00e3o", "D": "O fundo tiver boa performance nos \u00faltimos 24 meses"}, "correct": "B"}, {"id": "Q6", "block": "Bloco 1 \u2013 Suitability e perfil do cliente", "text": "Em rela\u00e7\u00e3o \u00e0 atualiza\u00e7\u00e3o do perfil do investidor, qual situa\u00e7\u00e3o mais claramente exige revis\u00e3o, mesmo que o prazo peri\u00f3dico ainda n\u00e3o tenha vencido?", "options": {"A": "Mudan\u00e7a relevante na composi\u00e7\u00e3o patrimonial ou nas necessidades de liquidez do cliente", "B": "Altera\u00e7\u00e3o do gerente respons\u00e1vel pelo relacionamento", "C": "Queda pontual da bolsa em um preg\u00e3o", "D": "Mudan\u00e7a do site da institui\u00e7\u00e3o financeira"}, "correct": "A"}, {"id": "Q7", "block": "Bloco 1 \u2013 Suitability e perfil do cliente", "text": "Um investidor de perfil moderado possui reserva de emerg\u00eancia completa, horizonte longo para aposentadoria e tolera oscila\u00e7\u00f5es intermedi\u00e1rias, mas deseja acompanhar mensalmente os resultados. Qual interpreta\u00e7\u00e3o \u00e9 mais correta?", "options": {"A": "O desejo de acompanhar mensalmente transforma o perfil em conservador", "B": "A frequ\u00eancia de acompanhamento n\u00e3o altera, por si s\u00f3, a adequa\u00e7\u00e3o de ativos de longo prazo", "C": "O investidor deve ficar apenas em p\u00f3s-fixados, pois monitoramento frequente exige baixa oscila\u00e7\u00e3o", "D": "O perfil moderado \u00e9 incompat\u00edvel com qualquer exposi\u00e7\u00e3o \u00e0 renda vari\u00e1vel"}, "correct": "B"}, {"id": "Q8", "block": "Bloco 1 \u2013 Suitability e perfil do cliente", "text": "Na entrevista de conhecimento e experi\u00eancia, a pergunta mais \u00fatil para diferenciar familiaridade superficial de experi\u00eancia efetiva \u00e9:", "options": {"A": "\u201cVoc\u00ea j\u00e1 ouviu falar de a\u00e7\u00f5es, fundos e derivativos?\u201d", "B": "\u201cVoc\u00ea conhece algu\u00e9m que investe?\u201d", "C": "\u201cH\u00e1 quanto tempo voc\u00ea investe?\u201d", "D": "\u201cQuais produtos voc\u00ea j\u00e1 utilizou, por quanto tempo e como reagiu em per\u00edodos de perda?\u201d"}, "correct": "D"}, {"id": "Q9", "block": "Bloco 1 \u2013 Suitability e perfil do cliente", "text": "Um cliente diz que \u201cn\u00e3o quer correr risco\u201d, mas seu objetivo \u00e9 dobrar o patrim\u00f4nio real em prazo relativamente curto. A melhor resposta do profissional \u00e9:", "options": {"A": "Mostrar que o objetivo pretendido e a avers\u00e3o declarada podem ser incompat\u00edveis, exigindo redefini\u00e7\u00e3o de prazo, aporte ou risco", "B": "Buscar um produto garantido que entregue esse retorno sem volatilidade", "C": "Priorizar a meta de retorno e deixar a toler\u00e2ncia a risco em segundo plano", "D": "Considerar que todo cliente quer alta rentabilidade e suavizar a explica\u00e7\u00e3o de risco"}, "correct": "A"}, {"id": "Q10", "block": "Bloco 1 \u2013 Suitability e perfil do cliente", "text": "Em um atendimento consultivo de alta qualidade, a etapa que mais reduz risco de recomenda\u00e7\u00e3o inadequada \u00e9:", "options": {"A": "Apresentar logo os produtos com melhor performance recente", "B": "Confirmar se o cliente concorda com a pol\u00edtica interna da institui\u00e7\u00e3o", "C": "Identificar objetivos, restri\u00e7\u00f5es, liquidez necess\u00e1ria, conhecimento e capacidade de suportar perdas antes da indica\u00e7\u00e3o", "D": "Testar a receptividade comercial do cliente antes de discutir risco"}, "correct": "C"}, {"id": "Q11", "block": "Bloco 1 \u2013 Suitability e perfil do cliente", "text": "Um cliente de alta renda, empreendedor, com fluxo de caixa vol\u00e1til e patrim\u00f4nio concentrado na pr\u00f3pria empresa, declara elevada toler\u00e2ncia a risco. Qual \u00e9 a an\u00e1lise mais sofisticada sob a \u00f3tica de suitability?", "options": {"A": "A alta toler\u00e2ncia a risco basta para justificar concentra\u00e7\u00e3o em ativos agressivos", "B": "A concentra\u00e7\u00e3o patrimonial j\u00e1 existente no neg\u00f3cio pr\u00f3prio deve ser considerada na avalia\u00e7\u00e3o global de risco", "C": "O patrim\u00f4nio empresarial n\u00e3o deve ser levado em conta, pois est\u00e1 fora da carteira financeira", "D": "O cliente deve receber apenas produtos estruturados, por ter perfil empresarial"}, "correct": "B"}, {"id": "Q12", "block": "Bloco 2 \u2013 Produtos de investimento", "text": "Um investidor compra Tesouro Prefixado e, semanas depois, a curva de juros sobe de forma relevante. Se vender antes do vencimento, o efeito mais prov\u00e1vel ser\u00e1:", "options": {"A": "Ganho, porque a taxa contratada ficou acima da Selic passada", "B": "Neutralidade, pois t\u00edtulos p\u00fablicos n\u00e3o sofrem marca\u00e7\u00e3o a mercado", "C": "Perda potencial, porque a eleva\u00e7\u00e3o das taxas tende a reduzir o pre\u00e7o do t\u00edtulo j\u00e1 emitido", "D": "Isen\u00e7\u00e3o da oscila\u00e7\u00e3o, pois o Tesouro recompra sempre pelo valor de face"}, "correct": "C"}, {"id": "Q13", "block": "Bloco 2 \u2013 Produtos de investimento", "text": "Sobre CDB, LCI e LCA, a afirma\u00e7\u00e3o mais precisa \u00e9:", "options": {"A": "LCI e LCA podem ser isentas de IR para pessoa f\u00edsica, mas continuam sujeitas ao risco de cr\u00e9dito do emissor", "B": "CDB n\u00e3o possui risco de cr\u00e9dito, pois \u00e9 produto banc\u00e1rio regulado", "C": "LCI sempre oferece liquidez di\u00e1ria ap\u00f3s a aplica\u00e7\u00e3o", "D": "LCA \u00e9 isenta de IR e, por isso, economicamente superior a qualquer CDB"}, "correct": "A"}, {"id": "Q14", "block": "Bloco 2 \u2013 Produtos de investimento", "text": "Um cliente compara uma deb\u00eanture incentivada com um CDB coberto por fundo garantidor. A principal diferen\u00e7a conceitual \u00e9:", "options": {"A": "A deb\u00eanture incentivada n\u00e3o tem risco de cr\u00e9dito do emissor", "B": "O CDB sempre rende mais por ter prote\u00e7\u00e3o adicional", "C": "A deb\u00eanture incentivada pode oferecer benef\u00edcio tribut\u00e1rio, mas sem a mesma l\u00f3gica de prote\u00e7\u00e3o t\u00edpica do produto banc\u00e1rio coberto", "D": "Ambos t\u00eam a mesma estrutura de risco, mudando apenas o nome comercial"}, "correct": "C"}, {"id": "Q15", "block": "Bloco 2 \u2013 Produtos de investimento", "text": "Um fundo de cr\u00e9dito privado pode apresentar queda relevante mesmo sem inadimpl\u00eancia material na carteira porque:", "options": {"A": "O aumento dos spreads e a menor liquidez dos pap\u00e9is podem afetar a marca\u00e7\u00e3o a mercado", "B": "O regulador impede cotas est\u00e1veis em qualquer fundo", "C": "O come-cotas reduz a cota diariamente de forma imprevis\u00edvel", "D": "Fundos desse tipo replicam o Ibovespa"}, "correct": "A"}, {"id": "Q16", "block": "Bloco 2 \u2013 Produtos de investimento", "text": "Em um COE com capital nominal protegido no vencimento, o maior erro de comunica\u00e7\u00e3o seria:", "options": {"A": "Explicar que a prote\u00e7\u00e3o est\u00e1 vinculada ao vencimento e ao risco do emissor", "B": "Informar que o produto pode limitar ganhos em troca da estrutura", "C": "Dizer que o investidor \u201cn\u00e3o perde nunca\u201d, independentemente de prazo, mercado ou solv\u00eancia do emissor", "D": "Mostrar cen\u00e1rios de payoff antes da decis\u00e3o"}, "correct": "C"}, {"id": "Q17", "block": "Bloco 2 \u2013 Produtos de investimento", "text": "Em previd\u00eancia, a diferen\u00e7a tribut\u00e1ria central entre PGBL e VGBL para um investidor pessoa f\u00edsica que faz declara\u00e7\u00e3o completa \u00e9:", "options": {"A": "O VGBL permite dedu\u00e7\u00e3o da contribui\u00e7\u00e3o da base tribut\u00e1vel anual", "B": "O PGBL admite dedu\u00e7\u00e3o at\u00e9 o limite aplic\u00e1vel e, no resgate, a tributa\u00e7\u00e3o recai sobre o montante resgatado", "C": "O VGBL \u00e9 isento na fase de benef\u00edcio", "D": "O PGBL s\u00f3 pode usar tabela progressiva"}, "correct": "B"}, {"id": "Q18", "block": "Bloco 2 \u2013 Produtos de investimento", "text": "Um fundo de a\u00e7\u00f5es \u201cativo\u201d com alta concentra\u00e7\u00e3o setorial tende a ser mais sens\u00edvel a:", "options": {"A": "Risco idiossincr\u00e1tico e decis\u00f5es discricion\u00e1rias do gestor", "B": "Somente risco de infla\u00e7\u00e3o", "C": "Apenas risco de cr\u00e9dito soberano", "D": "Risco nulo, desde que regulado pela CVM"}, "correct": "A"}, {"id": "Q19", "block": "Bloco 2 \u2013 Produtos de investimento", "text": "Sobre fundos imobili\u00e1rios listados, qual an\u00e1lise \u00e9 mais correta?", "options": {"A": "O rendimento distribu\u00eddo elimina a necessidade de avaliar pre\u00e7o de mercado", "B": "Vac\u00e2ncia, revisional, concentra\u00e7\u00e3o de locat\u00e1rios e custo de capital podem afetar tanto fluxo quanto pre\u00e7o da cota", "C": "FIIs t\u00eam comportamento equivalente ao de LCI de mesmo prazo", "D": "A renda mensal passada \u00e9 garantia impl\u00edcita de renda futura"}, "correct": "B"}, {"id": "Q20", "block": "Bloco 2 \u2013 Produtos de investimento", "text": "Um cliente quer \u201cganhar com d\u00f3lar\u201d para prote\u00e7\u00e3o parcial da carteira local. O produto que mais diretamente entrega essa exposi\u00e7\u00e3o, em regra, \u00e9:", "options": {"A": "Fundo DI", "B": "Tesouro Prefixado", "C": "Fundo cambial referenciado na moeda-alvo", "D": "Deb\u00eanture incentivada"}, "correct": "C"}, {"id": "Q21", "block": "Bloco 2 \u2013 Produtos de investimento", "text": "Sobre fundos DI e fundos de renda fixa simples, a diferen\u00e7a pr\u00e1tica relevante \u00e9 que:", "options": {"A": "Ambos s\u00e3o isentos de IR para pessoa f\u00edsica", "B": "O fundo DI costuma buscar acompanhar mais de perto a taxa DI com baix\u00edssimo risco de cr\u00e9dito e mercado", "C": "O fundo DI \u00e9 adequado apenas para investidores qualificados", "D": "O fundo DI tem prote\u00e7\u00e3o de fundo garantidor"}, "correct": "B"}, {"id": "Q22", "block": "Bloco 2 \u2013 Produtos de investimento", "text": "Em um cen\u00e1rio de expectativa de queda relevante da Selic, qual posi\u00e7\u00e3o tende a se beneficiar mais, tudo o mais constante?", "options": {"A": "T\u00edtulos prefixados comprados antes da queda", "B": "Produtos indexados ao CDI adquiridos depois da queda", "C": "Caixa n\u00e3o remunerado", "D": "Produto sem marca\u00e7\u00e3o a mercado e sem remunera\u00e7\u00e3o contratual"}, "correct": "A"}, {"id": "Q23", "block": "Bloco 2 \u2013 Produtos de investimento", "text": "Uma pessoa f\u00edsica deseja renda passiva e considera CRI/CRA, deb\u00eantures incentivadas e FIIs. A melhor pondera\u00e7\u00e3o \u00e9:", "options": {"A": "Todos s\u00e3o equivalentes, mudando apenas a forma operacional", "B": "A eventual vantagem tribut\u00e1ria n\u00e3o elimina diferen\u00e7as de cr\u00e9dito, liquidez, fluxo e sensibilidade de pre\u00e7o", "C": "FIIs necessariamente ter\u00e3o menor risco que CRI/CRA", "D": "Deb\u00eantures incentivadas sempre pagam fluxo mensal previs\u00edvel"}, "correct": "B"}, {"id": "Q24", "block": "Bloco 2 \u2013 Produtos de investimento", "text": "Uma oferta destaca em letras grandes a cobertura de fundo garantidor e menciona caracter\u00edsticas do produto apenas em fonte secund\u00e1ria. \u00c0 luz das mudan\u00e7as recentes de distribui\u00e7\u00e3o, isso \u00e9 problem\u00e1tico porque:", "options": {"A": "A garantia n\u00e3o pode ser mencionada em nenhum material", "B": "A cobertura pode ser citada, mas n\u00e3o deve ser o principal elemento de persuas\u00e3o nem obscurecer caracter\u00edsticas essenciais do produto", "C": "Todo material com taxa deve omitir prazo e car\u00eancia", "D": "Somente o emissor, e n\u00e3o o distribuidor, responde pela forma da divulga\u00e7\u00e3o"}, "correct": "B"}, {"id": "Q25", "block": "Bloco 2 \u2013 Produtos de investimento", "text": "Em rela\u00e7\u00e3o \u00e0 compara\u00e7\u00e3o entre Tesouro Selic e poupan\u00e7a para reserva de liquidez, a an\u00e1lise mais t\u00e9cnica \u00e9:", "options": {"A": "A poupan\u00e7a domina em qualquer cen\u00e1rio por n\u00e3o oscilar", "B": "O Tesouro Selic pode sofrer pequena oscila\u00e7\u00e3o se vendido antes, mas tende a oferecer maior ader\u00eancia \u00e0 taxa b\u00e1sica do que a poupan\u00e7a", "C": "Ambos t\u00eam a mesma din\u00e2mica de remunera\u00e7\u00e3o", "D": "O Tesouro Selic \u00e9 um produto de renda vari\u00e1vel"}, "correct": "B"}, {"id": "Q26", "block": "Bloco 2 \u2013 Produtos de investimento", "text": "Em um fundo multimercado macro, a fonte de risco decorre principalmente de:", "options": {"A": "Exposi\u00e7\u00e3o a diferentes fatores como juros, moedas, bolsa e cr\u00e9dito, conforme a estrat\u00e9gia do gestor", "B": "Exclusivamente do risco de vac\u00e2ncia", "C": "Apenas da inadimpl\u00eancia do administrador", "D": "Somente de varia\u00e7\u00f5es do CDI"}, "correct": "A"}, {"id": "Q27", "block": "Bloco 2 \u2013 Produtos de investimento", "text": "Um investidor conservador pergunta se \u201cprevid\u00eancia \u00e9 sempre mais segura que fundo\u201d. A resposta correta \u00e9:", "options": {"A": "Sim, porque previd\u00eancia n\u00e3o tem risco de mercado", "B": "Sim, porque todo plano tem garantia de rentabilidade m\u00ednima", "C": "N\u00e3o; previd\u00eancia \u00e9 um inv\u00f3lucro, e o risco depende dos ativos da carteira do plano", "D": "N\u00e3o; previd\u00eancia \u00e9 sempre mais arriscada que fundos tradicionais"}, "correct": "C"}, {"id": "Q28", "block": "Bloco 3 \u2013 Carteiras e diversifica\u00e7\u00e3o", "text": "Uma carteira formada por p\u00f3s-fixados, t\u00edtulos indexados \u00e0 infla\u00e7\u00e3o, a\u00e7\u00f5es globais e um pequeno bloco cambial tende a apresentar:", "options": {"A": "Elimina\u00e7\u00e3o completa do risco total", "B": "Redu\u00e7\u00e3o de risco espec\u00edfico e exposi\u00e7\u00e3o a diferentes motores de retorno", "C": "Garantia de retorno real positivo em qualquer janela", "D": "Inutilidade pr\u00e1tica, pois classes distintas se anulam"}, "correct": "B"}, {"id": "Q29", "block": "Bloco 3 \u2013 Carteiras e diversifica\u00e7\u00e3o", "text": "Um cliente quer usar recursos da entrada de um im\u00f3vel em at\u00e9 10 meses. A recomenda\u00e7\u00e3o mais consistente para esse objetivo \u00e9:", "options": {"A": "Priorizar preserva\u00e7\u00e3o e liquidez, evitando ativos com alta oscila\u00e7\u00e3o de pre\u00e7o", "B": "Aproveitar o prazo para buscar forte aprecia\u00e7\u00e3o em a\u00e7\u00f5es c\u00edclicas", "C": "Comprar t\u00edtulos longos indexados \u00e0 infla\u00e7\u00e3o e ignorar o prazo", "D": "Concentrar em multimercados alavancados para tentar superar a meta"}, "correct": "A"}, {"id": "Q30", "block": "Bloco 3 \u2013 Carteiras e diversifica\u00e7\u00e3o", "text": "Qual situa\u00e7\u00e3o melhor ilustra redu\u00e7\u00e3o de risco n\u00e3o sistem\u00e1tico?", "options": {"A": "Substituir a\u00e7\u00f5es brasileiras por caixa", "B": "Alocar recursos em ativos de emissores, setores e classes diferentes", "C": "Migrar toda a carteira para um \u00fanico ETF internacional", "D": "Aumentar a exposi\u00e7\u00e3o ao mesmo emissor em diferentes vencimentos"}, "correct": "B"}, {"id": "Q31", "block": "Bloco 3 \u2013 Carteiras e diversifica\u00e7\u00e3o", "text": "Em uma carteira de longo prazo, o rebalanceamento peri\u00f3dico tem como principal fun\u00e7\u00e3o:", "options": {"A": "Realizar lucros sempre que houver alta em qualquer ativo", "B": "Maximizar o giro para aproveitar janelas t\u00e1ticas de curt\u00edssimo prazo", "C": "Restaurar o peso estrat\u00e9gico das classes quando oscila\u00e7\u00f5es distorcem a aloca\u00e7\u00e3o-alvo", "D": "Reduzir automaticamente a tributa\u00e7\u00e3o total da carteira"}, "correct": "C"}, {"id": "Q32", "block": "Bloco 3 \u2013 Carteiras e diversifica\u00e7\u00e3o", "text": "Um cliente arrojado j\u00e1 possui patrim\u00f4nio relevante em a\u00e7\u00f5es da empresa onde trabalha e quer ampliar ainda mais essa posi\u00e7\u00e3o por convic\u00e7\u00e3o. A melhor leitura t\u00e9cnica \u00e9:", "options": {"A": "H\u00e1 aumento do risco de concentra\u00e7\u00e3o, inclusive pela correla\u00e7\u00e3o entre emprego, renda e patrim\u00f4nio", "B": "Como a convic\u00e7\u00e3o \u00e9 alta, a concentra\u00e7\u00e3o deixa de ser um problema", "C": "O v\u00ednculo empregat\u00edcio n\u00e3o interfere no risco patrimonial", "D": "A exposi\u00e7\u00e3o em a\u00e7\u00f5es do empregador \u00e9 sempre adequada para perfis arrojados"}, "correct": "A"}, {"id": "Q33", "block": "Bloco 3 \u2013 Carteiras e diversifica\u00e7\u00e3o", "text": "Sobre correla\u00e7\u00e3o entre ativos, qual afirma\u00e7\u00e3o \u00e9 mais correta?", "options": {"A": "Diversifica\u00e7\u00e3o s\u00f3 funciona com correla\u00e7\u00e3o exatamente negativa", "B": "Ativos com correla\u00e7\u00e3o baixa podem melhorar a rela\u00e7\u00e3o risco-retorno da carteira, mesmo sem correla\u00e7\u00e3o negativa", "C": "Correla\u00e7\u00e3o hist\u00f3rica alta garante correla\u00e7\u00e3o futura id\u00eantica", "D": "Correla\u00e7\u00e3o importa apenas em carteiras de renda vari\u00e1vel pura"}, "correct": "B"}, {"id": "Q34", "block": "Bloco 3 \u2013 Carteiras e diversifica\u00e7\u00e3o", "text": "Um investidor com reserva de emerg\u00eancia incompleta quer comprar um ativo il\u00edquido de longo prazo porque \u201cpaga mais\u201d. O profissional deve priorizar:", "options": {"A": "O retorno prometido, pois a emerg\u00eancia \u00e9 evento improv\u00e1vel", "B": "A recomenda\u00e7\u00e3o do emissor", "C": "A adequa\u00e7\u00e3o da liquidez ao uso esperado do recurso e \u00e0 necessidade de reserva", "D": "O benef\u00edcio fiscal do produto, independentemente da car\u00eancia"}, "correct": "C"}, {"id": "Q35", "block": "Bloco 3 \u2013 Carteiras e diversifica\u00e7\u00e3o", "text": "Uma carteira com excesso de ativos de renda fixa prefixada longa pode ficar particularmente vulner\u00e1vel a:", "options": {"A": "Eleva\u00e7\u00e3o inesperada dos juros reais", "B": "Queda de infla\u00e7\u00e3o impl\u00edcita", "C": "Redu\u00e7\u00e3o do risco-pa\u00eds", "D": "Melhora de liquidez no mercado secund\u00e1rio"}, "correct": "A"}, {"id": "Q36", "block": "Bloco 3 \u2013 Carteiras e diversifica\u00e7\u00e3o", "text": "Um cliente diz aceitar risco, mas entra em p\u00e2nico em toda corre\u00e7\u00e3o de mercado e pressiona por trocas frequentes. Em monitoramento de carteira, a melhor resposta \u00e9:", "options": {"A": "Refor\u00e7ar a rotatividade, pois acompanhamento ativo compensa ansiedade", "B": "Reavaliar se a aloca\u00e7\u00e3o est\u00e1 aderente \u00e0 toler\u00e2ncia comportamental efetiva e ao horizonte do cliente", "C": "Ignorar o comportamento e preservar apenas a aloca\u00e7\u00e3o matem\u00e1tica original", "D": "Eliminar a diversifica\u00e7\u00e3o para simplificar o acompanhamento"}, "correct": "B"}, {"id": "Q37", "block": "Bloco 4 \u2013 \u00c9tica e compliance", "text": "Um profissional destaca a cobertura de fundo garantidor como principal argumento comercial de um produto e deixa em segundo plano car\u00eancia, emissor e prazo. Essa pr\u00e1tica \u00e9 inadequada porque:", "options": {"A": "Produtos com cobertura n\u00e3o podem ser distribu\u00eddos por canais digitais", "B": "O material deve priorizar caracter\u00edsticas pr\u00f3prias do produto, sem dar destaque desproporcional \u00e0 cobertura garantidora", "C": "O uso do termo \u201cgarantia\u201d \u00e9 proibido em qualquer hip\u00f3tese", "D": "O distribuidor n\u00e3o precisa observar regra de material t\u00e9cnico"}, "correct": "B"}, {"id": "Q38", "block": "Bloco 4 \u2013 \u00c9tica e compliance", "text": "Em um conflito entre meta comercial e adequa\u00e7\u00e3o do produto ao cliente, a conduta correta \u00e9:", "options": {"A": "Priorizar a meta, desde que o cliente assine o aceite", "B": "Ofertar o produto e complementar a explica\u00e7\u00e3o depois", "C": "Priorizar o interesse do cliente e a conformidade regulat\u00f3ria", "D": "Transferir a decis\u00e3o integral ao cliente, sem recomenda\u00e7\u00e3o t\u00e9cnica"}, "correct": "C"}, {"id": "Q39", "block": "Bloco 4 \u2013 \u00c9tica e compliance", "text": "Um assessor recebe informa\u00e7\u00e3o interna relevante e ainda n\u00e3o p\u00fablica sobre poss\u00edvel evento societ\u00e1rio que pode afetar o pre\u00e7o de uma a\u00e7\u00e3o. Antes da divulga\u00e7\u00e3o oficial, ele deve:", "options": {"A": "Operar para si em valor pequeno, pois n\u00e3o altera o mercado", "B": "Avisar apenas clientes de maior relacionamento", "C": "Sugerir compra sem explicar o motivo", "D": "Abster-se de negociar e de repassar a informa\u00e7\u00e3o indevidamente"}, "correct": "D"}, {"id": "Q40", "block": "Bloco 4 \u2013 \u00c9tica e compliance", "text": "A manuten\u00e7\u00e3o de registros de atendimento, perfil e justificativas de recomenda\u00e7\u00e3o serve principalmente para:", "options": {"A": "Substituir a necessidade de conduta \u00e9tica", "B": "Dar lastro \u00e0 rastreabilidade, supervis\u00e3o e demonstra\u00e7\u00e3o de ader\u00eancia \u00e0s regras", "C": "Facilitar a venda cruzada, apenas", "D": "Eliminar o risco de questionamentos futuros"}, "correct": "B"}, {"id": "Q41", "block": "Bloco 4 \u2013 \u00c9tica e compliance", "text": "Um colaborador acessa dados financeiros detalhados de um cliente sem necessidade funcional, apenas por curiosidade. Isso configura:", "options": {"A": "Viola\u00e7\u00e3o de dever de confidencialidade e de controles internos", "B": "Procedimento normal, se o colaborador for certificado", "C": "Falha exclusivamente tecnol\u00f3gica, sem implica\u00e7\u00e3o de conduta", "D": "Infra\u00e7\u00e3o irrelevante se n\u00e3o houver compartilhamento externo"}, "correct": "A"}, {"id": "Q42", "block": "Bloco 5 \u2013 Economia e tributa\u00e7\u00e3o", "text": "Se a autoridade monet\u00e1ria eleva a taxa b\u00e1sica para conter infla\u00e7\u00e3o, o efeito mais esperado no curto prazo sobre t\u00edtulos prefixados j\u00e1 emitidos \u00e9:", "options": {"A": "Valoriza\u00e7\u00e3o, porque a economia ficar\u00e1 mais est\u00e1vel", "B": "Nenhum impacto, pois o contrato j\u00e1 foi fechado", "C": "Desvaloriza\u00e7\u00e3o por ajuste de pre\u00e7o \u00e0s novas taxas requeridas pelo mercado", "D": "Convers\u00e3o autom\u00e1tica em p\u00f3s-fixados"}, "correct": "C"}, {"id": "Q43", "block": "Bloco 5 \u2013 Economia e tributa\u00e7\u00e3o", "text": "Em fundos de longo prazo para pessoa f\u00edsica, a tributa\u00e7\u00e3o do IR segue, em linhas gerais:", "options": {"A": "Tabela regressiva por prazo, com al\u00edquota menor nas aplica\u00e7\u00f5es mantidas por mais tempo", "B": "Al\u00edquota \u00fanica, independentemente do prazo", "C": "Isen\u00e7\u00e3o total quando o fundo investir em renda fixa", "D": "Tributa\u00e7\u00e3o apenas no aporte, sem incid\u00eancia no resgate"}, "correct": "A"}, {"id": "Q44", "block": "Bloco 5 \u2013 Economia e tributa\u00e7\u00e3o", "text": "Sobre IOF em aplica\u00e7\u00f5es financeiras de renda fixa, a afirma\u00e7\u00e3o correta \u00e9:", "options": {"A": "\u00c9 cobrado somente ap\u00f3s 30 dias", "B": "Incide de forma regressiva em resgates ocorridos nos primeiros 30 dias", "C": "Aplica-se apenas a produtos isentos de IR", "D": "Foi substitu\u00eddo integralmente pelo come-cotas"}, "correct": "B"}, {"id": "Q45", "block": "Bloco 5 \u2013 Economia e tributa\u00e7\u00e3o", "text": "A infla\u00e7\u00e3o persistentemente acima da meta tende a afetar o investidor porque:", "options": {"A": "Aumenta o poder de compra de recursos parados", "B": "Elimina a diferen\u00e7a entre retorno nominal e real", "C": "Reduz a import\u00e2ncia de ativos indexados a pre\u00e7os", "D": "Corr\u00f3i o retorno real quando a carteira n\u00e3o acompanha a alta de pre\u00e7os"}, "correct": "D"}];
+        const userAnswers = {};
+        let currentBlock = 1;
+        let isSubmitted = false;
+
+        const blockRanges = {
+            1: { start: 1, end: 11, title: "Bloco 1 – Suitability e perfil do cliente" },
+            2: { start: 12, end: 27, title: "Bloco 2 – Produtos de investimento" },
+            3: { start: 28, end: 36, title: "Bloco 3 – Carteiras e diversificação" },
+            4: { start: 37, end: 41, title: "Bloco 4 – Ética e compliance" },
+            5: { start: 42, end: 45, title: "Bloco 5 – Economia e tributação" }
+        };
+
+        function switchBlock(blockNum) {
+            currentBlock = blockNum;
+            for (let i = 1; i <= 5; i++) {
+                const btn = document.getElementById(`tab-b${i}`);
+                if (i === blockNum) {
+                    btn.className = "w-full text-left px-4 py-3 rounded-xl font-medium transition text-blue-600 bg-blue-50 border border-blue-100 flex justify-between items-center group";
+                } else {
+                    btn.className = "w-full text-left px-4 py-3 rounded-xl font-medium transition text-slate-600 hover:bg-slate-100 flex justify-between items-center group";
+                }
+            }
+            renderQuestions();
+            updateProgress();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById("questions-container");
+            container.innerHTML = "";
+            const range = blockRanges[currentBlock];
+            
+            const filtered = questions.slice(range.start - 1, range.end);
+            
+            filtered.forEach((q) => {
+                const card = document.createElement("div");
+                card.id = `card-${q.id}`;
+                card.className = "bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col gap-4 transition-all";
+                
+                const header = document.createElement("div");
+                header.className = "flex items-start gap-3";
+                header.innerHTML = `
+                    <span class="bg-slate-100 text-slate-700 text-xs font-bold px-2.5 py-1 rounded-md mt-0.5">${q.id}</span>
+                    <h3 class="text-base font-semibold leading-relaxed text-slate-800">${q.text}</h3>
+                `;
+                card.appendChild(header);
+                
+                const optionsList = document.createElement("div");
+                optionsList.className = "flex flex-col gap-2.5 mt-2";
+                
+                Object.keys(q.options).forEach((letter) => {
+                    const isChecked = userAnswers[q.id] === letter;
+                    const optionBtn = document.createElement("button");
+                    optionBtn.type = "button";
+                    optionBtn.disabled = isSubmitted;
+                    optionBtn.onclick = () => selectOption(q.id, letter);
+                    optionBtn.id = `opt-${q.id}-${letter}`;
+                    
+                    let btnClass = "w-full text-left px-4 py-3 rounded-xl border text-sm font-medium transition-all flex items-start gap-3 cursor-pointer ";
+                    
+                    if (isSubmitted) {
+                        optionBtn.classList.add("cursor-not-allowed");
+                        if (letter === q.correct) {
+                            btnClass += "bg-emerald-50 border-emerald-300 text-emerald-900";
+                        } else if (isChecked && userAnswers[q.id] !== q.correct) {
+                            btnClass += "bg-red-50 border-red-300 text-red-900";
+                        } else {
+                            btnClass += "bg-slate-50 border-slate-200 text-slate-400 opacity-60";
+                        }
+                    } else {
+                        if (isChecked) {
+                            btnClass += "bg-blue-50 border-blue-500 text-blue-900 shadow-sm ring-1 ring-blue-500";
+                        } else {
+                            btnClass += "bg-white border-slate-200 text-slate-700 hover:bg-slate-50 hover:border-slate-300";
+                        }
+                    }
+                    
+                    optionBtn.className = btnClass;
+                    
+                    let markerClass = "w-6 h-6 shrink-0 rounded-full flex items-center justify-center font-bold text-xs ";
+                    if (isSubmitted) {
+                        if (letter === q.correct) markerClass += "bg-emerald-600 text-white";
+                        else if (isChecked) markerClass += "bg-red-600 text-white";
+                        else markerClass += "bg-slate-200 text-slate-500";
+                    } else {
+                        markerClass += isChecked ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600";
+                    }
+                    
+                    optionBtn.innerHTML = `
+                        <span class="${markerClass}">${letter}</span>
+                        <span class="pt-0.5 leading-snug">${q.options[letter]}</span>
+                    `;
+                    
+                    optionsList.appendChild(optionBtn);
+                });
+                
+                card.appendChild(optionsList);
+                
+                if (isSubmitted) {
+                    const feedback = document.createElement("div");
+                    feedback.className = "mt-2 p-3 rounded-xl text-xs flex items-center gap-2 font-medium ";
+                    if (userAnswers[q.id] === q.correct) {
+                        feedback.className += "bg-emerald-50 text-emerald-800";
+                        feedback.innerHTML = `✓ Resposta correta! Parabéns.`;
+                    } else {
+                        feedback.className += "bg-red-50 text-red-800";
+                        feedback.innerHTML = `✕ Resposta incorreta. A alternativa certa é a <strong>${q.correct}</strong>.`;
+                    }
+                    card.appendChild(feedback);
+                }
+                
+                container.appendChild(card);
+            });
+        }
+
+        function selectOption(questionId, letter) {
+            if (isSubmitted) return;
+            userAnswers[questionId] = letter;
+            renderQuestions();
+            updateProgress();
+        }
+
+        function updateProgress() {
+            let overallCount = 0;
+            for (let b = 1; b <= 5; b++) {
+                const range = blockRanges[b];
+                let blockAnswered = 0;
+                for (let i = range.start; i <= range.end; i++) {
+                    if (userAnswers[`Q${i}`]) {
+                        blockAnswered++;
+                        overallCount++;
+                    }
+                }
+                document.getElementById(`badge-b${b}`).innerText = `${blockAnswered}/${range.end - range.start + 1}`;
+                
+                if (b === currentBlock) {
+                    const totalBlockQs = range.end - range.start + 1;
+                    const pct = Math.round((blockAnswered / totalBlockQs) * 100);
+                    document.getElementById("block-progress-text").innerText = `${pct}% completo`;
+                    document.getElementById("block-progress-bar").style.width = `${pct}%`;
+                    document.getElementById("current-block-title").innerText = range.title;
+                }
+            }
+            document.getElementById("answered-count").innerText = overallCount;
+        }
+
+        function finishQuiz() {
+            if (isSubmitted) return;
+            
+            const answeredTotal = Object.keys(userAnswers).length;
+            if (answeredTotal < 45) {
+                if (!confirm(`Você respondeu apenas ${answeredTotal} de 45 questões. Deseja realmente finalizar e ver a correção?`)) {
+                    return;
+                }
+            }
+            
+            isSubmitted = true;
+            document.getElementById("finish-btn").disabled = true;
+            document.getElementById("finish-btn").classList.add("opacity-50", "cursor-not-allowed");
+            document.getElementById("finish-btn").innerText = "Simulado Concluído";
+            
+            let totalCorrect = 0;
+            const blockCorrect = { 1:0, 2:0, 3:0, 4:0, 5:0 };
+            
+            questions.forEach((q, idx) => {
+                const qNum = idx + 1;
+                let bId = 1;
+                for (let b = 1; b <= 5; b++) {
+                    if (qNum >= blockRanges[b].start && qNum <= blockRanges[b].end) {
+                        bId = b;
+                        break;
+                    }
+                }
+                if (userAnswers[q.id] === q.correct) {
+                    totalCorrect++;
+                    blockCorrect[bId]++;
+                }
+            });
+            
+            const globalScorePct = Math.round((totalCorrect / 45) * 100);
+            const isApproved = globalScorePct >= 70;
+            
+            const banner = document.getElementById("results-banner");
+            banner.classList.remove("hidden");
+            
+            if (isApproved) {
+                banner.className = "p-6 rounded-2xl shadow-sm border bg-emerald-50 border-emerald-200 text-emerald-950 flex flex-col gap-4";
+                banner.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-emerald-600 text-white rounded-full flex items-center justify-center font-bold text-lg">✓</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-emerald-900">Aprovado no Simulado!</h3>
+                            <p class="text-sm">Parabéns! Seu desempenho reflete pleno domínio do conteúdo programático.</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                banner.className = "p-6 rounded-2xl shadow-sm border bg-amber-50 border-amber-200 text-amber-950 flex flex-col gap-4";
+                banner.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 bg-amber-600 text-white rounded-full flex items-center justify-center font-bold text-lg">!</div>
+                        <div>
+                            <h3 class="text-xl font-bold text-amber-900">Abaixo do Índice de Aprovação</h3>
+                            <p class="text-sm">Você alcançou menos de 70%. Revise a correção e os blocos com menor pontuação.</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            let breakdownHtml = `
+                <div class="mt-2 border-t border-slate-200 pt-4">
+                    <h4 class="text-sm font-bold uppercase tracking-wider text-slate-500 mb-3">Resultados por Bloco de Conhecimento</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            `;
+            
+            for (let b = 1; b <= 5; b++) {
+                const totalQs = blockRanges[b].end - blockRanges[b].start + 1;
+                const correctNum = blockCorrect[b];
+                const pct = Math.round((correctNum / totalQs) * 100);
+                
+                breakdownHtml += `
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 flex flex-col gap-1 shadow-sm">
+                        <span class="text-xs font-semibold text-slate-500 truncate">${blockRanges[b].title}</span>
+                        <div class="flex justify-between items-baseline mt-1">
+                            <span class="text-xl font-bold text-slate-800">${correctNum}/${totalQs}</span>
+                            <span class="text-sm font-bold ${pct >= 70 ? 'text-emerald-600' : 'text-amber-600'}">${pct}%</span>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            breakdownHtml += `
+                    <div class="bg-slate-900 text-white p-4 rounded-xl flex flex-col gap-1 shadow-sm md:col-span-2 lg:col-span-1">
+                        <span class="text-xs font-semibold text-slate-400">Score Global Final</span>
+                        <div class="flex justify-between items-baseline mt-1">
+                            <span class="text-xl font-bold text-blue-400">${totalCorrect}/45 acertos</span>
+                            <span class="text-xl font-extrabold ${isApproved ? 'text-emerald-400' : 'text-amber-400'}">${globalScorePct}%</span>
+                        </div>
+                    </div>
+                </div></div>`;
+            
+            banner.innerHTML += breakdownHtml;
+            
+            renderQuestions();
+            updateProgress();
+            
+            banner.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        renderQuestions();
+        updateProgress();
+    </script>
+</body>
+</html>
